@@ -427,6 +427,16 @@ public interface MicroListener extends ParseTreeListener {
 	 */
 	void exitCond(MicroParser.CondContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MicroParser#do_cond}.
+	 * @param ctx the parse tree
+	 */
+	void enterDo_cond(MicroParser.Do_condContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MicroParser#do_cond}.
+	 * @param ctx the parse tree
+	 */
+	void exitDo_cond(MicroParser.Do_condContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MicroParser#compop}.
 	 * @param ctx the parse tree
 	 */

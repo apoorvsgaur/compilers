@@ -519,6 +519,18 @@ public class MicroBaseListener implements MicroListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDo_cond(MicroParser.Do_condContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDo_cond(MicroParser.Do_condContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCompop(MicroParser.CompopContext ctx) { }
 	/**
 	 * {@inheritDoc}

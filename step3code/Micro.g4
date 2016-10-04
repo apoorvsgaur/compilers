@@ -121,10 +121,12 @@ else_part:
 	'ELSIF' '(' cond ')' decl stmt_list else_part |  ;
 cond:
 	expr compop expr | 'TRUE' | 'FALSE';
+do_cond:
+	expr compop expr | 'TRUE' | 'FALSE';
 compop:
 	'<' | '>' | '=' | '!=' | '<=' | '>=' ;
 do_while_stmt:
-	'DO' decl stmt_list 'WHILE' '(' cond ')' ';' ;
+	'DO' decl stmt_list 'WHILE' '(' do_cond ')' ';' ;
 
 
 

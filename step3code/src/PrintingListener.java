@@ -10,7 +10,6 @@ public class PrintingListener extends MicroBaseListener {
 	Stack<SymbolTable> pointerStack = new Stack<>();
 	String typePointer;
 	Integer blockCount = 0;
-	Integer skipCount = 0;
 
 	@Override
 	public void enterProgram(MicroParser.ProgramContext ctx) {
@@ -37,20 +36,14 @@ public class PrintingListener extends MicroBaseListener {
 
 	@Override
 	public void enterCond(MicroParser.CondContext ctx) {
-		if (skipCount == 0) {
-			blockCount++;
-			SymbolTable table = new SymbolTable("BLOCK " + blockCount);
-			pointerStack.peek().addTable(table);
-			pointerStack.push(table);
-		}
+		blockCount++;
+		SymbolTable table = new SymbolTable("BLOCK " + blockCount);
+		pointerStack.peek().addTable(table);
+		pointerStack.push(table);
 	}
 	@Override
 	public void exitCond(MicroParser.CondContext ctx) {
-		if (skipCount > 0){
-			skipCount--;
-		} else {
-			pointerStack.pop();
-		}
+		pointerStack.pop();
 	}
 
 	@Override public void enterDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
@@ -58,7 +51,6 @@ public class PrintingListener extends MicroBaseListener {
 		SymbolTable table = new SymbolTable("BLOCK "+ blockCount);
 		pointerStack.peek().addTable(table);
 		pointerStack.push(table);
-		skipCount++;
 	}
 	@Override public void exitDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
 		pointerStack.pop();
