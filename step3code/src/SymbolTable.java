@@ -17,24 +17,24 @@ public class SymbolTable{
 
     void print(){
         System.out.println("Symbol table " + scopeName);
-        symbolList.forEach( item -> {
+        for( Object item : symbolList){
             if (item.getClass() == SymbolTable.class){
                 System.out.println("");
                 ((SymbolTable) item).print();
             } else if (item.getClass()==Symbol.class){
                 ((Symbol) item).print();
             }
-        });
+        }
     }
 
     void addSymbol(String name, String type, String value){
-        symbolList.forEach( item -> {
+        for( Object item : symbolList){
             if (item.getClass()==Symbol.class){
                 if (((Symbol)item).name.equals(name)){
                     throw new RuntimeException("DECLARATION ERROR "+ name);
                 }
             }
-        });
+        }
         if (value == null)
             symbolList.add(new Symbol(name, type));
         else
