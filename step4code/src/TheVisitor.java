@@ -10,6 +10,22 @@ public class TheVisitor extends MicroBaseVisitor {
     Integer blockCount = 0;
     NodeConverter nodeConverter;
 
+    public String checkType(String value){
+        try{
+            int integer = Integer.parseInt(value);
+            return "INT";
+        }
+        catch(NumberFormatException e){
+        }
+        try{
+            float floatnum = Float.parseFloat(value);
+            return "FLOAT";
+        }
+        catch(NumberFormatException e){
+        }
+        throw new RuntimeException("Incorrect integer");
+    }
+
 
     @Override
     public Object visitProgram(MicroParser.ProgramContext ctx) {
@@ -95,13 +111,46 @@ public class TheVisitor extends MicroBaseVisitor {
             return null;
         }
         String[] ids = ctx.id_list().getText().split(",");
-
+        for( String s : ids ){
+            nodeConverter.addNode(new Node("READ",null,null,s));
+        }
         return null;
     }
 
     @Override
     public Object visitWrite_stmt(MicroParser.Write_stmtContext ctx) {
         super.visitWrite_stmt(ctx);
+        if(ctx.getChild(2) == null || ctx.getChild(2).getText().equals("")){
+            return null;
+        }
+        String[] ids = ctx.id_list().getText().split(",");
+        for( String s : ids ){
+            nodeConverter.addNode(new Node("WRITE",null,null,s));
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitExpr(MicroParser.ExprContext ctx) {
+        super.visitExpr(ctx);
+        return null;
+    }
+
+    @Override
+    public Object visitExpr_prefix(MicroParser.Expr_prefixContext ctx) {
+        super.visitExpr_prefix(ctx);
+        return null;
+    }
+
+    @Override
+    public Object visitFactor(MicroParser.FactorContext ctx) {
+        super.visitFactor(ctx);
+        return null;
+    }
+
+    @Override
+    public Object visitFactor_prefix(MicroParser.Factor_prefixContext ctx) {
+        super.visitFactor_prefix(ctx);
         return null;
     }
 }

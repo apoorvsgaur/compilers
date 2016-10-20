@@ -5,77 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c0d4a1fa-94c6-4c3f-97ab-769b87db6703" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/Micro.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/MicroBaseListener.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/MicroBaseVisitor.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/MicroLexer.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/MicroListener.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/MicroParser.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/MicroVisitor.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/PrintingListener.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/SymbolTable.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/classes/ThrowingErrorListener.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/lib/antlr.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/Makefile" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/Micro.g4" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/build/Micro.tokens" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/build/MicroBaseListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/build/MicroBaseVisitor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/build/MicroLexer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/build/MicroLexer.tokens" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/build/MicroListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/build/MicroParser.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/build/MicroVisitor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/gen/Micro.tokens" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/gen/MicroBaseListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/gen/MicroBaseVisitor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/gen/MicroLexer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/gen/MicroLexer.tokens" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/gen/MicroListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/gen/MicroParser.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/gen/MicroVisitor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test1.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test11.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test13.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test14.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test16.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test18.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test19.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test20.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test21.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test5.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test6.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test7.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test8.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/input/test9.micro" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test1.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test11.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test13.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test14.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test16.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test18.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test19.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test20.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test21.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test5.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test6.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test7.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test8.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/output/test9.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/Micro.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/Node.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/NodeConverter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/PrintingListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/Symbol.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/SymbolTable.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/SymbolWatcher.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/TheVisitor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/src/ThrowingErrorListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/step4code/step4code.iml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Compiler.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/step4code/Micro.g4" afterPath="$PROJECT_DIR$/step4code/Micro.g4" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/step4code/src/TheVisitor.java" afterPath="$PROJECT_DIR$/step4code/src/TheVisitor.java" />
     </list>
     <ignored path="compilers.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -98,16 +30,26 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TheVisitor.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TheVisitor.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/step4code/src/TheVisitor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.3591772">
+              <caret line="134" column="8" selection-start-line="134" selection-start-column="8" selection-end-line="134" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2468#2469#0" expanded="true" />
-                <element signature="e#2518#2519#0" expanded="true" />
+                <element signature="e#2880#2881#0" expanded="true" />
+                <element signature="e#2930#2931#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Node.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/step4code/src/Node.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -126,7 +68,7 @@
         <entry file="file://$PROJECT_DIR$/step4code/src/SymbolWatcher.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+              <caret line="0" column="4" selection-start-line="0" selection-start-column="4" selection-end-line="0" selection-end-column="4" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#415#416#0" expanded="true" />
@@ -156,36 +98,12 @@
         <entry file="file://$PROJECT_DIR$/step4code/src/NodeConverter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="15" column="1" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+              <caret line="8" column="30" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
               <folding>
-                <element signature="e#197#198#0" expanded="true" />
                 <element signature="e#231#232#0" expanded="true" />
                 <element signature="e#250#251#0" expanded="true" />
                 <element signature="e#295#296#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Node.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/step4code/src/Node.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.47468355">
-              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-              <folding>
-                <element signature="e#362#363#0" expanded="true" />
-                <element signature="e#425#426#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Micro.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/step4code/src/Micro.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="6" selection-start-line="28" selection-start-column="6" selection-end-line="28" selection-end-column="6" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -227,12 +145,13 @@
         <option value="$PROJECT_DIR$/step4code/src/PrintingListener.java" />
         <option value="$PROJECT_DIR$/step3code/src/Micro.java" />
         <option value="$PROJECT_DIR$/step4code/src/Micro.java" />
-        <option value="$PROJECT_DIR$/step4code/src/Node.java" />
         <option value="$PROJECT_DIR$/step4code/src/NodeConverter.java" />
         <option value="$PROJECT_DIR$/step4code/src/Symbol.java" />
-        <option value="$PROJECT_DIR$/step4code/src/TheVisitor.java" />
         <option value="$PROJECT_DIR$/step4code/src/SymbolTable.java" />
         <option value="$PROJECT_DIR$/step4code/src/SymbolWatcher.java" />
+        <option value="$PROJECT_DIR$/step4code/Micro.g4" />
+        <option value="$PROJECT_DIR$/step4code/src/Node.java" />
+        <option value="$PROJECT_DIR$/step4code/src/TheVisitor.java" />
       </list>
     </option>
   </component>
@@ -902,12 +821,12 @@
       <workItem from="1475630208401" duration="764000" />
       <workItem from="1476893639692" duration="833000" />
       <workItem from="1476894711851" duration="5600000" />
-      <workItem from="1476929875971" duration="12759000" />
+      <workItem from="1476929875971" duration="16543000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="37884000" />
+    <option name="totallyTimeSpent" value="41668000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="12" y="23" width="1247" height="752" extended-state="0" />
@@ -1318,22 +1237,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/step4code/src/TheVisitor.java">
+    <entry file="file://$PROJECT_DIR$/step4code/Micro.g4">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.023734177">
+          <caret line="23" column="4" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/step4code/src/Micro.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.56962025">
+          <caret line="28" column="6" selection-start-line="28" selection-start-column="6" selection-end-line="28" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/step4code/src/NodeConverter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+          <caret line="8" column="30" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2468#2469#0" expanded="true" />
-            <element signature="e#2518#2519#0" expanded="true" />
+            <element signature="e#231#232#0" expanded="true" />
+            <element signature="e#250#251#0" expanded="true" />
+            <element signature="e#295#296#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/step4code/Micro.g4">
+    <entry file="file://$PROJECT_DIR$/step4code/src/Node.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.3259493">
-          <caret line="23" column="3" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1346,39 +1281,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/step4code/src/Symbol.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/step4code/src/NodeConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="1" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
-          <folding>
-            <element signature="e#197#198#0" expanded="true" />
-            <element signature="e#231#232#0" expanded="true" />
-            <element signature="e#250#251#0" expanded="true" />
-            <element signature="e#295#296#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/step4code/src/Micro.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="6" selection-start-line="28" selection-start-column="6" selection-end-line="28" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/step4code/src/SymbolWatcher.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <caret line="0" column="4" selection-start-line="0" selection-start-column="4" selection-end-line="0" selection-end-column="4" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#415#416#0" expanded="true" />
@@ -1393,13 +1299,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/step4code/src/Node.java">
+    <entry file="file://$PROJECT_DIR$/step4code/src/Symbol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47468355">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/step4code/src/TheVisitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3591772">
+          <caret line="134" column="8" selection-start-line="134" selection-start-column="8" selection-end-line="134" selection-end-column="8" />
           <folding>
-            <element signature="e#362#363#0" expanded="true" />
-            <element signature="e#425#426#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#2880#2881#0" expanded="true" />
+            <element signature="e#2930#2931#0" expanded="true" />
           </folding>
         </state>
       </provider>
