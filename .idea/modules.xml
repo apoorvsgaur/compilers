@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/compilers.iml" filepath="$PROJECT_DIR$/compilers.iml" />
       <module fileurl="file://$PROJECT_DIR$/step1code/step1code.iml" filepath="$PROJECT_DIR$/step1code/step1code.iml" />
       <module fileurl="file://$PROJECT_DIR$/step3code/step3code.iml" filepath="$PROJECT_DIR$/step3code/step3code.iml" />
+      <module fileurl="file://$PROJECT_DIR$/step4code/step4code.iml" filepath="$PROJECT_DIR$/step4code/step4code.iml" />
     </modules>
   </component>
 </project>

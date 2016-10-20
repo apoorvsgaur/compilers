@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Compiler">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/step1code/Compiler.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
