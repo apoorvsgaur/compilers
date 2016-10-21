@@ -1,5 +1,5 @@
 /**
- * Created by brandonscheller on 10/20/16.
+ * Created by brandonscheller on 10/20/16
  */
 public class Node {
     String op;
@@ -15,6 +15,14 @@ public class Node {
     }
 
     void print(){
-        System.out.println(op+operand1+operand2+result);
+        if(operand1 == null){
+            System.out.println(":"+op+" "+result);
+            return;
+        }
+        if(operand2 == null){
+            System.out.println(":"+op+" "+operand1+" "+result);
+            return;
+        }
+        System.out.println(";"+op+" "+operand1+" "+operand2+" "+result);
     }
 }

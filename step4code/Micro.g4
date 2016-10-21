@@ -21,7 +21,7 @@ WS:
 	([ \t\r\n]+ | '--' ~('\n')*) -> skip ;
 
 /*program*/
-pro gram:
+program:
 	'PROGRAM' id 'BEGIN' pgm_body 'END';
 id:
 	IDENTIFIER;
