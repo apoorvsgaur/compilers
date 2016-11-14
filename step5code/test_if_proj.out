@@ -1,0 +1,35 @@
+;IR code
+;STOREI 7 num
+;STOREI 2 i
+;STOREI 42 a
+;I+ num a $T0
+;STOREI $T0 num
+;I+ num a $T1
+;STOREI $T1 num
+;I- num a $T2
+;STOREI $T2 num
+;WRITEI num
+;tiny code
+var a
+var num
+var i
+move 7 r0
+move r0 num
+move 2 r1
+move r1 i
+move 42 r2
+move r2 a
+move num r3
+move a r4
+addi r3 r4
+move r4 num
+move num r5
+move a r6
+addi r5 r6
+move r6 num
+move num r7
+move a r8
+subi r8 r7
+move r7 num
+sys writei num
+sys halt

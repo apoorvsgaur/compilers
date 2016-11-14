@@ -8,20 +8,24 @@ public class TheVisitor extends MicroBaseVisitor {
 
     SymbolWatcher global = new SymbolWatcher();
     Stack<SymbolTable> pointerStack = new Stack<>();
-    String typePointer;
-    Integer blockCount = 0;
+    String typePointer; //Stores the variable type for a continous string of variables (comma seperated list)
+    Integer blockCount = 0; //Used for step3 to name blocks
     NodeConverter nodeConverter = new NodeConverter(global);
 
-    Integer tempCount = 0;
+    Integer tempCount = 0; //Building IR, need temporary registers
 
-    String currentType;
+    String currentType; //Checking variable types, for operations
 
+    @Override
+    public Object visitBase_stmt(MicroParser.Base_stmtContext ctx) {
+        return super.visitBase_stmt(ctx);
+    }
 
     @Override
     public Object visitProgram(MicroParser.ProgramContext ctx) {
         pointerStack.push(global.getGlobal());
 
-        visitChildren(ctx);
+        visitChildren(ctx); //ANTLR Function - Visits the child of a given node from left to right, aka inorder traversal
 
         //global.print();
         nodeConverter.print();
