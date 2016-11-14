@@ -1,5 +1,3 @@
-import org.antlr.v4.runtime.tree.ParseTree;
-
 import java.lang.Object;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -12,7 +10,8 @@ public class TheVisitor extends MicroBaseVisitor {
     Integer blockCount = 0; //Used for step3 to name blocks
     NodeConverter nodeConverter = new NodeConverter(global);
 
-    Integer tempCount = 0; //Building IR, need temporary registers
+    Integer tempCount = 0;
+    Integer labelCount = 0;
 
     String currentType; //Checking variable types, for operations
 
@@ -63,11 +62,32 @@ public class TheVisitor extends MicroBaseVisitor {
         SymbolTable table = new SymbolTable("BLOCK "+ blockCount);
         pointerStack.peek().addTable(table);
         pointerStack.push(table);
-
-        super.visitDo_while_stmt(ctx);
-
+        String tempLabel = "t_do_while"+labelCount;
+        nodeConverter.addNode(new Node("LABEL", null, null, tempLabel));
+        visitStmt_list(ctx.stmt_list());
+        ConditionalPackage finalPack = visitDo_cond(ctx.do_cond());
+        nodeConverter.addNode(new Node(finalPack.op, finalPack.target1, finalPack.target2, tempLabel));
         pointerStack.pop();
         return null;
+    }
+
+    @Override
+    public ConditionalPackage visitDo_cond(MicroParser.Do_condContext ctx) {
+        String op;
+        switch (ctx.compop().getText()){
+            case ">": op = "GT"; break;
+            case ">=": op = "GE"; break;
+            case "<": op = "LT"; break;
+            case "<=": op = "LE"; break;
+            case "!=": op = "NE"; break;
+            case "=": op = "EQ"; break;
+            default: op = "ERROR";
+        }
+        NodePackage expr1 = visitExpr(ctx.expr(0));
+        NodePackage expr2 = visitExpr(ctx.expr(1));
+        nodeConverter.addNodes(expr1.getNodes());
+        nodeConverter.addNodes(expr2.getNodes());
+        return new ConditionalPackage(op, expr1.id, expr2.id);
     }
 
     @Override
