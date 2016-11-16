@@ -14,6 +14,7 @@ public class TheVisitor extends MicroBaseVisitor {
     Integer labelCount = 0;
     Integer ifCount = 0;
     Integer elseCount = 0;
+    Integer count;
 
     String currentType; //Checking variable types, for operations
 
@@ -49,23 +50,21 @@ public class TheVisitor extends MicroBaseVisitor {
     public Object visitIf_stmt(MicroParser.If_stmtContext ctx) {
 
         ConditionalPackage condition = visitCond(ctx.cond());
-        Integer count = ifCount;
-        ifCount++;
         String tempLabel = "t_if"+count;
-
+        count = ifCount;
+        ifCount++;
         System.out.println("In visitIf_stmt for ifCount" + count);
         nodeConverter.addNode(new Node(condition.op, condition.target1, condition.target2, tempLabel));
 
-        if(ctx.else_part().stmt_list() != null) {
-            nodeConverter.addNode(new Node("JUMP", null, null, "t_else" + elseCount));
-        }
+
+        nodeConverter.addNode(new Node("JUMP", null, null, "t_else" + elseCount));
         nodeConverter.addNode(new Node("LABEL", null, null, tempLabel));
         visitStmt_list(ctx.stmt_list());
-        nodeConverter.addNode(new Node("JUMP", null, null, "END"));
-        if(ctx.else_part().stmt_list() == null) {
-            nodeConverter.addNode(new Node("LABEL", null, null, "END"));
-        }
-        else {
+        nodeConverter.addNode(new Node("LABEL", null, null, "END"+count));
+
+
+        if(ctx.else_part().stmt_list() != null) //Else needs to be there
+        {
             visitElse_part(ctx.else_part());
         }
 
@@ -82,14 +81,14 @@ public class TheVisitor extends MicroBaseVisitor {
                 elseCount++;
                 ConditionalPackage condition = visitCond(ctx.cond());
                 nodeConverter.addNode(new Node(condition.op, condition.target1, condition.target2, "t_else" + elseCount));
-                nodeConverter.addNode(new Node("JUMP", null, null, "END"));
+                nodeConverter.addNode(new Node("JUMP", null, null, "END"+count));
                 visitElse_part(ctx.else_part());
             }
             else if (ctx.stmt_list() != null){
                 nodeConverter.addNode(new Node("LABEL", null, null, "t_else" + elseCount));
                 elseCount++;
                 visitStmt_list(ctx.stmt_list());
-                nodeConverter.addNode(new Node("JUMP", null, null, "END"));
+                nodeConverter.addNode(new Node("JUMP", null, null, "END"+count));
             }
             return null;
     }
