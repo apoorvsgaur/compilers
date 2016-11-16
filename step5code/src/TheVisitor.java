@@ -10,7 +10,10 @@ public class TheVisitor extends MicroBaseVisitor {
     Integer blockCount = 0; //Used for step3 to name blocks
     NodeConverter nodeConverter = new NodeConverter(global);
 
-    Integer tempCount = 0; //Building IR, need temporary registers
+    Integer tempCount = 0;
+    Integer labelCount = 0;
+    Integer ifCount = 0;
+    Integer elseCount = 0;
 
     String currentType; //Checking variable types, for operations
 
@@ -21,15 +24,12 @@ public class TheVisitor extends MicroBaseVisitor {
 
     @Override
     public Object visitProgram(MicroParser.ProgramContext ctx) {
-        System.out.println("visitProgram");
-        //visitProgram always first
-        pointerStack.push(global.getGlobal()); //Pushes an empty SymbolWatcher.global onto the stack
+        pointerStack.push(global.getGlobal());
 
         visitChildren(ctx); //ANTLR Function - Visits the child of a given node from left to right, aka inorder traversal
 
-
         //global.print();
-        nodeConverter.print(); //Finally prints both IR Code and TinyCode
+        nodeConverter.print();
         return null;
     }
 
@@ -41,32 +41,61 @@ public class TheVisitor extends MicroBaseVisitor {
 
         super.visitFunc_decl(ctx);
 
-        System.out.println("visitFunc_decl");
-
-        //System.out.println(ctx.getText() + '\n');
-
         pointerStack.pop();
+        return null;
+    }
+
+    @Override
+    public Object visitIf_stmt(MicroParser.If_stmtContext ctx) {
+
+        ConditionalPackage condition = visitCond(ctx.cond());
+        Integer count = ifCount;
+        ifCount++;
+        String tempLabel = "t_if"+count;
+
+        System.out.println("In visitIf_stmt for ifCount" + count);
+        nodeConverter.addNode(new Node(condition.op, condition.target1, condition.target2, tempLabel));
+
+        if(ctx.else_part().stmt_list() != null) {
+            nodeConverter.addNode(new Node("JUMP", null, null, "t_else" + elseCount));
+        }
+        nodeConverter.addNode(new Node("LABEL", null, null, tempLabel));
+        visitStmt_list(ctx.stmt_list());
+        nodeConverter.addNode(new Node("JUMP", null, null, "END"));
+        if(ctx.else_part().stmt_list() == null) {
+            nodeConverter.addNode(new Node("LABEL", null, null, "END"));
+        }
+        else {
+            visitElse_part(ctx.else_part());
+        }
+
         return null;
     }
 
 
     @Override
-    public Object visitIf_stmt(MicroParser.If_stmtContext ctx){
-        //if_stmt:
-        //'IF' '(' cond ')' decl stmt_list else_part 'ENDIF';
-        //else_part:
-        //'ELSIF' '(' cond ')' decl stmt_list else_part |  ;
-        visitCond(ctx.cond());
+    public Object visitElse_part(MicroParser.Else_partContext ctx){
 
+            System.out.println("In visitElse_stmt for elseCount" + elseCount);
+            if (ctx.else_part() != null) {
+                nodeConverter.addNode(new Node("LABEL", null, null, "t_else" + elseCount));
+                elseCount++;
+                ConditionalPackage condition = visitCond(ctx.cond());
+                nodeConverter.addNode(new Node(condition.op, condition.target1, condition.target2, "t_else" + elseCount));
+                nodeConverter.addNode(new Node("JUMP", null, null, "END"));
+                visitElse_part(ctx.else_part());
+            }
+            else if (ctx.stmt_list() != null){
+                nodeConverter.addNode(new Node("LABEL", null, null, "t_else" + elseCount));
+                elseCount++;
+                visitStmt_list(ctx.stmt_list());
+                nodeConverter.addNode(new Node("JUMP", null, null, "END"));
+            }
+            return null;
     }
 
-
-
     @Override
-    public Boolean visitCond(MicroParser.CondContext ctx) {
-        //cond:
-        //expr compop expr | 'TRUE' | 'FALSE';
-
+    public ConditionalPackage visitCond(MicroParser.CondContext ctx) {
         blockCount++;
         SymbolTable table = new SymbolTable("BLOCK " + blockCount);
         pointerStack.peek().addTable(table);
@@ -74,43 +103,62 @@ public class TheVisitor extends MicroBaseVisitor {
 
         NodePackage expr1 = visitExpr(ctx.expr(0));
         NodePackage expr2 = visitExpr(ctx.expr(1));
-        ConditionalPackage();
+        nodeConverter.addNodes(expr1.getNodes());
+        nodeConverter.addNodes(expr2.getNodes());
+        String op;
+        switch (ctx.compop().getText()){
+            case ">": op = "GT"; break;
+            case ">=": op = "GE"; break;
+            case "<": op = "LT"; break;
+            case "<=": op = "LE"; break;
+            case "!=": op = "NE"; break;
+            case "=": op = "EQ"; break;
+            default: op = "ERROR";
+        }
 
+        pointerStack.pop();
+        return new ConditionalPackage(op, expr1.id, expr2.id);
+    }
 
-        System.out.println("visitCond");
-        super.visitCond(ctx);
-
+    @Override
+    public Object visitDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
+        blockCount++;
+        SymbolTable table = new SymbolTable("BLOCK "+ blockCount);
+        pointerStack.peek().addTable(table);
+        pointerStack.push(table);
+        String tempLabel = "t_do_while"+labelCount;
+        labelCount++;
+        nodeConverter.addNode(new Node("LABEL", null, null, tempLabel));
+        visitStmt_list(ctx.stmt_list());
+        ConditionalPackage finalPack = visitDo_cond(ctx.do_cond());
+        nodeConverter.addNode(new Node(finalPack.op, finalPack.target1, finalPack.target2, tempLabel));
         pointerStack.pop();
         return null;
     }
 
     @Override
-    public Object visitDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
-        // do_while_stmt:
-        // 'DO' decl stmt_list 'WHILE' '(' do_cond ')' ';' ;
-
-        blockCount++;
-        SymbolTable table = new SymbolTable("BLOCK "+ blockCount);
-        pointerStack.peek().addTable(table);
-        pointerStack.push(table);
-
-        //System.out.println("visitDo_while_stmt");
-
-
-        super.visitDo_while_stmt(ctx);
-
-        pointerStack.pop();
-        return null;
+    public ConditionalPackage visitDo_cond(MicroParser.Do_condContext ctx) {
+        String op;
+        switch (ctx.compop().getText()){
+            case ">": op = "GT"; break;
+            case ">=": op = "GE"; break;
+            case "<": op = "LT"; break;
+            case "<=": op = "LE"; break;
+            case "!=": op = "NE"; break;
+            case "=": op = "EQ"; break;
+            default: op = "ERROR";
+        }
+        NodePackage expr1 = visitExpr(ctx.expr(0));
+        NodePackage expr2 = visitExpr(ctx.expr(1));
+        nodeConverter.addNodes(expr1.getNodes());
+        nodeConverter.addNodes(expr2.getNodes());
+        return new ConditionalPackage(op, expr1.id, expr2.id);
     }
-
 
     @Override
     public Object visitString_decl(MicroParser.String_declContext ctx) {
         pointerStack.peek().addSymbol(ctx.id().IDENTIFIER().toString(), "STRING", ctx.str().STRINGLITERAL().toString());
         global.addSymbol(ctx.id().IDENTIFIER().toString(),"STRING",ctx.str().STRINGLITERAL().toString());
-
-        System.out.println("visitString_decl");
-
         return super.visitString_decl(ctx);
     }
 
@@ -118,32 +166,26 @@ public class TheVisitor extends MicroBaseVisitor {
     public Object visitParam_decl(MicroParser.Param_declContext ctx) {
         pointerStack.peek().addSymbol(ctx.id().IDENTIFIER().toString(), ctx.var_type().getText(), null);
         global.addSymbol(ctx.id().IDENTIFIER().toString(), ctx.var_type().getText(), null);
-
-        System.out.println("visitParam_decl");
-
         return super.visitParam_decl(ctx);
     }
 
     @Override
     public Object visitVar_type(MicroParser.Var_typeContext ctx) {
         typePointer = ctx.getText();
-        System.out.println("visitVar_type: " + typePointer);
-
         return super.visitVar_type(ctx);
     }
 
     @Override
     public Object visitVar_id(MicroParser.Var_idContext ctx) {
-        //pointerStack - Stack of symbol tables
-        //global is the symbolWatcher. symbolWatcher contains a list of symbol tables, a variableMap
-
-        pointerStack.peek().addSymbol(ctx.IDENTIFIER().toString(),typePointer,null); //Adds the variable to the symbolTable of the top of the stack
-        global.addSymbol(ctx.IDENTIFIER().toString(),typePointer,null); //Adds the variable to the variablemap of the SymbolWatcher
-
-        System.out.println("visitVar_id: " + ctx.IDENTIFIER().toString());
-
+        pointerStack.peek().addSymbol(ctx.IDENTIFIER().toString(),typePointer,null);
+        global.addSymbol(ctx.IDENTIFIER().toString(),typePointer,null);
         return super.visitVar_id(ctx);
     }
+
+
+
+
+
 
     @Override
     public Object visitAssign_expr(MicroParser.Assign_exprContext ctx) {
@@ -163,7 +205,6 @@ public class TheVisitor extends MicroBaseVisitor {
         ArrayList<Node> nodeList = finalPack.getNodes();
         nodeList.add(assignNode);
         nodeConverter.addNodes(nodeList);
-        System.out.println("visitAssign_expr");
         return null;
     }
 
@@ -184,9 +225,6 @@ public class TheVisitor extends MicroBaseVisitor {
                 throw new RuntimeException();
             }
         }
-
-        System.out.println("visitRead_stmt");
-
         return null;
     }
 
@@ -207,9 +245,6 @@ public class TheVisitor extends MicroBaseVisitor {
                 throw new RuntimeException();
             }
         }
-
-        System.out.println("visitWrite_stmt");
-
         return null;
     }
 
@@ -249,8 +284,6 @@ public class TheVisitor extends MicroBaseVisitor {
             finalPack = new NodePackage();
             System.out.println("Error pack type: "+exprPack.type.toString());
         }
-
-        System.out.println("visitExpr");
 
         return finalPack;
     }
@@ -295,7 +328,6 @@ public class TheVisitor extends MicroBaseVisitor {
             System.out.println("Error pack type: "+exprPack.type.toString());
         }
 
-        System.out.println("visitExpr_prefix");
         return finalPack;
     }
 
@@ -310,9 +342,6 @@ public class TheVisitor extends MicroBaseVisitor {
         nodeList.addAll(factorPack.getNodes());
         nodeList.addAll(postPack.getNodes());
         NodePackage finalPack;
-
-
-        System.out.println("visitFactor");
 
         String id;
         if(factorPack.type == NodePackage.NodeType.EMPTY){
@@ -353,8 +382,6 @@ public class TheVisitor extends MicroBaseVisitor {
         nodeList.addAll(factorPack.getNodes());
         NodePackage finalPack;
 
-        System.out.println("visitFactor_prefix");
-
         String id;
         String op;
         if(factorPack.type == NodePackage.NodeType.EMPTY){
@@ -392,22 +419,14 @@ public class TheVisitor extends MicroBaseVisitor {
             System.out.println("Not supported FUNCTIONS");
             throw new RuntimeException();
         }
-
-        System.out.println("visitPostfix_expr");
-
         return visitPrimary(ctx.primary());
-
     }
 
     @Override
     public NodePackage visitPrimary(MicroParser.PrimaryContext ctx) {
         String id;
-
-        System.out.println("visitPrimary");
-
         if(ctx.expr() == null){
             id = ctx.getText();
-            System.out.println("New NodePackage made with id: " + id);
             return new NodePackage(id);
         } else {
             return visitExpr(ctx.expr());

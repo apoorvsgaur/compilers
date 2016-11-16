@@ -6,8 +6,6 @@ import java.util.ArrayList;
  */
 public class NodePackage {
 
-    //Class that stores the nodes in a given expression
-
     enum NodeType {
         EMPTY, ID, ID_OP
     }

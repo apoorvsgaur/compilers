@@ -5,40 +5,37 @@ import java.util.Map;
 /**
  * Created by brandonscheller on 10/20/16
  */
-@SuppressWarnings("ALL")
 public class NodeConverter {
-    private ArrayList<Node> nodeList = new ArrayList<>(); //nodeList contains IR code
-    SymbolWatcher global; //SymbolWatcher contains all symbol tables
+    private ArrayList<Node> nodeList = new ArrayList<>();
+    SymbolWatcher global;
 
     NodeConverter(SymbolWatcher g){
         this.global = g;
     }
-
-    void addNode(Node node){
+    void addNode( Node node ){
         nodeList.add(node);
     }
 
     void addNodes(ArrayList<Node> nodeList){
-
         this.nodeList.addAll(nodeList);
     }
 
     void print(){
-        //System.out.println(";IR code");
-        //nodeList.forEach(Node::print);
-        //System.out.println(";tiny code");
-        //convertNodes();
-        //lineList.forEach(s -> System.out.println(s));
+        System.out.println(";IR code");
+        nodeList.forEach(Node::print);
+        System.out.println(";tiny code");
+        convertNodes();
+        lineList.forEach(s -> System.out.println(s));
     }
 
-    ArrayList<String> lineList = new ArrayList<>(); //Linelist contains eventual tinycode
+    ArrayList<String> lineList = new ArrayList<>();
     Integer regCount = 0;
     String refReg;
     void convertNodes(){
         global.variableMap.keySet().forEach(s -> lineList.add("var "+s));
         Map<String,String> tempMap = new HashMap<>();
         for(Node node: nodeList){
-            String val1, val2, target, temp;
+            String val1, val2, target, temp, temp2;
             target = node.result;
             temp = "r"+regCount;
             switch (node.op){
@@ -364,6 +361,81 @@ public class NodeConverter {
                     tempMap.put(target,val1);
                     lineList.add("subi "+val2+" "+val1);
                     break;
+                case "JUMP":
+                    lineList.add("jmp " + node.result);
+                    break;
+                case "LABEL":
+                    lineList.add("label " + node.result);
+                    break;
+                case "GT":
+                    lineList.add("move " + node.operand1 + " " + temp);
+                    regCount++;
+
+                    temp2 = "r"+regCount;
+                    regCount++;
+                    lineList.add("move " + node.operand1 + " " + temp2);
+
+                    lineList.add("cmpi " + temp + " " + temp2);
+                    lineList.add("jgt " + node.result);
+                    break;
+                case "GE":
+
+                    lineList.add("move " + node.operand1 + " " + temp);
+                    regCount++;
+
+                    temp2 = "r"+regCount;
+                    regCount++;
+                    lineList.add("move " + node.operand1 + " " + temp2);
+
+                    lineList.add("cmpi " + temp + " " + temp2);
+                    lineList.add("jge " + node.result);
+                    break;
+                case "LT":
+
+                    lineList.add("move " + node.operand1 + " " + temp);
+                    regCount++;
+
+                    temp2 = "r"+regCount;
+                    regCount++;
+                    lineList.add("move " + node.operand1 + " " + temp2);
+
+                    lineList.add("cmpi " + temp + " " + temp2);
+                    lineList.add("jlt " + node.result);
+                    break;
+                case "LE":
+
+                    lineList.add("move " + node.operand1 + " " + temp);
+                    regCount++;
+                    temp2 = "r"+regCount;
+                    regCount++;
+                    lineList.add("move " + node.operand1 + " " + temp2);
+
+                    lineList.add("cmpi " + temp + " " + temp2);
+                    lineList.add("jle " + node.result);
+                    break;
+                case "NE":
+
+                    lineList.add("move " + node.operand1 + " " + temp);
+                    regCount++;
+
+                    temp2 = "r"+regCount;
+                    regCount++;
+                    lineList.add("move " + node.operand1 + " " + temp2);
+                    lineList.add("cmpi " + temp + " " + temp2);
+                    lineList.add("jne " + node.result);
+                    break;
+                case "EQ":
+
+                    lineList.add("move " + node.operand1 + " " + temp);
+                    regCount++;
+
+                    temp2 = "r"+regCount;
+                    regCount++;
+                    lineList.add("move " + node.operand1 + " " + temp2);
+                    lineList.add("cmpi " + temp + " " + temp2);
+                    lineList.add("jeq " + node.result);
+                    break;
+
                 default: throw new RuntimeException();
             }
         }

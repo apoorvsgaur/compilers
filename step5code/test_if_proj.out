@@ -2,12 +2,18 @@
 ;STOREI 7 num
 ;STOREI 2 i
 ;STOREI 42 a
+;LT i 5 t_if0
+;JUMP t_else0
+;LABEL t_if0
 ;I+ num a $T0
 ;STOREI $T0 num
+;LT i 3 t_if1
+;LABEL t_if1
 ;I+ num a $T1
 ;STOREI $T1 num
-;I- num a $T2
-;STOREI $T2 num
+;JUMP END
+;LABEL END
+;JUMP END
 ;WRITEI num
 ;tiny code
 var a
@@ -19,17 +25,27 @@ move 2 r1
 move r1 i
 move 42 r2
 move r2 a
-move num r3
-move a r4
-addi r3 r4
-move r4 num
+move i r3
+move i r4
+cmpi r3 r4
+jlt t_if0
+jmp t_else0
+label t_if0
 move num r5
 move a r6
 addi r5 r6
 move r6 num
-move num r7
-move a r8
-subi r8 r7
-move r7 num
+move i r7
+move i r8
+cmpi r7 r8
+jlt t_if1
+label t_if1
+move num r9
+move a r10
+addi r9 r10
+move r10 num
+jmp END
+label END
+jmp END
 sys writei num
 sys halt
