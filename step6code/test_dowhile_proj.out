@@ -1,0 +1,50 @@
+;IR code
+;STOREF 7.0 num
+;STOREI 100 i
+;STOREI 1 j
+;STOREF num approx
+;LABEL t_do_while0
+;F/ num approx $T0
+;F+ approx $T0 $T1
+;F* 0.5 $T1 $T2
+;STOREF $T2 newapprox
+;STOREF newapprox approx
+;I- i 1 $T3
+;STOREI $T3 i
+;NE i 0 t_do_while0
+;WRITEF approx
+;tiny code
+var newapprox
+var num
+var i
+var j
+var approx
+move 7.0 r0
+move r0 num
+move 100 r1
+move r1 i
+move 1 r2
+move r2 j
+move num r3
+move r3 approx
+label t_do_while0
+move num r4
+move approx r5
+divr r5 r4
+move approx r6
+addr r6 r4
+move 0.5 r7
+mulr r7 r4
+move r4 newapprox
+move newapprox r8
+move r8 approx
+move i r9
+move 1 r10
+subi r10 r9
+move r9 i
+move i r11
+move i r12
+cmpi r11 r12
+jne t_do_while0
+sys writer approx
+sys halt

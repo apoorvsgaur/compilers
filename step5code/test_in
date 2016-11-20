@@ -1,0 +1,45 @@
+var newapprox
+var num
+var i
+var j
+var approx
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+label main
+link 0
+move 7.0 r0
+move r0 num
+move 100 r1
+move r1 i
+move 1 r2
+move r2 j
+move num r3
+move r3 approx
+label t_do_while0
+move num r4
+move approx r5
+divr r5 r4
+move approx r6
+addr r6 r4
+move 0.5 r7
+mulr r7 r4
+move r4 newapprox
+move newapprox r8
+move r8 approx
+move i r9
+move 1 r10
+subi r10 r9
+move r9 i
+move i r11
+move 0 r12
+cmpi r11 r12
+jne t_do_while0
+sys writer approx
+unlnk
+ret
+end

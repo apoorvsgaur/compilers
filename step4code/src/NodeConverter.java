@@ -56,9 +56,9 @@ public class NodeConverter {
                     }
                     lineList.add("move "+val1+" "+target);
                     break;
-                case "WRITEI": lineList.add("sys writei "+ node.result);
+                case "WRITEI": lineList.add("sys writei "+ target);
                     break;
-                case "WRITEF": lineList.add("sys writer "+ node.result);
+                case "WRITEF": lineList.add("sys writer "+ target);
                     break;
                 case "F*":
                     val1 = "";
