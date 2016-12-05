@@ -1,0 +1,69 @@
+;tiny code
+var TempVar3
+var TempVar2
+var TempVar1
+var a
+var num
+var i
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+label main
+link 0
+move 7 r3
+move r3 num
+move 2 r3
+move r3 i
+move 42 r3
+move r3 a
+move i r1
+move 5 r2
+cmpi r1 r2
+jlt t_if0
+jmp t_else0
+label t_if0
+move num r1
+move a r2
+addi r1 r2
+move r2 TempVar1
+move TempVar1 r3
+move r3 num
+move i r1
+move 3 r2
+cmpi r1 r2
+jlt t_if1
+jmp END1
+label t_if1
+move num r1
+move a r2
+addi r1 r2
+move r2 TempVar2
+move TempVar2 r3
+move r3 num
+jmp END1
+label END1
+jmp END0
+label t_else0
+move i r1
+move 5 r2
+cmpi r1 r2
+jge t_if2
+jmp END2
+label t_if2
+move num r1
+move a r2
+subi r2 r1
+move r1 TempVar3
+move TempVar3 r3
+move r3 num
+jmp END2
+label END2
+label END0
+sys writei num
+unlnk
+ret
+end

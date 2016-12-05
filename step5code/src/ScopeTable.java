@@ -79,7 +79,10 @@ public class ScopeTable{
     }
 
     String checkType(String variableName){
-        return symbolMap.get(variableName).type;
+        if (symbolMap.get(variableName) != null)
+            return symbolMap.get(variableName).type;
+        else
+            return null;
     }
 
     String checkValue(String variableName){

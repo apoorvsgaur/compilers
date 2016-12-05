@@ -61,6 +61,11 @@ public class SymbolWatcher {
         return scopeMap.get(currentScope).checkType(variableName);
     }
 
+    String checkTypeWScope(String variableName, String scope) {
+        return scopeMap.get(scope).checkType(variableName);
+    }
+
+
     String checkValue(String variableName) {
         return scopeMap.get(currentScope).checkValue(variableName);
     }

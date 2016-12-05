@@ -14,6 +14,8 @@ public class NodeConverter {
     String currentFunction;
 
     Integer pushPopper = 6;
+    Integer tempVarCount = 1;
+    boolean isInt;
 
     NodeConverter(SymbolWatcher g){
         this.global = g;
@@ -26,12 +28,29 @@ public class NodeConverter {
         this.nodeList.addAll(nodeList);
     }
 
+    void addVarNum(Integer varNum){
+        tempVarCount = varNum;
+    }
+
+    void generateTempVars(){
+        for( int i = 1; i < tempVarCount; i++ ){
+            lineList.add(0,"var TempVar"+ i);
+        }
+    }
+
     void print(){
         System.out.println(";IR code");
+        for( Node theNode : nodeList){
+            theNode.print();
+        }
         nodeList.forEach(Node::print);
         System.out.println(";tiny code");
         convertNodes();
-        lineList.forEach(s -> System.out.println(s));
+        generateTempVars();
+        for(String s : lineList) {
+            String hold = s.replace("$T", "TempVar");
+            System.out.println(hold);
+        }
     }
 
     void convertNodes(){
@@ -71,10 +90,10 @@ public class NodeConverter {
             if( node.op != null) {
                 switch (node.op) {
                     case "READI":
-                            lineList.add("sys readi $-" + node.result.substring(2));
+                            lineList.add("sys readi "+target);
                         break;
                     case "READF":
-                            lineList.add("sys readr $-" + node.result.substring(2));
+                            lineList.add("sys readr "+target);
                         break;
                     case "LINK":
                             lineList.add("link "+ global.getVarCount(currentFunction));
@@ -85,13 +104,13 @@ public class NodeConverter {
                             lineList.add("push");
                         } else {
                             if(node.result.startsWith("$T")){
-                                lineList.add("push " + tempMap.get(node.result));
+                                lineList.add("move " + node.result + " r0");
+                                lineList.add("push r0");
                             } else if (node.result.startsWith("$L")){
                                 lineList.add("push $-" + node.result.substring(2));
                             } else {
                                 lineList.add("push " + node.result);
                             }
-
                         }
                         break;
                     case "POP":
@@ -100,7 +119,8 @@ public class NodeConverter {
                             lineList.add("pop");
                         } else {
                             tempMap.put(node.result,temp);
-                            lineList.add("pop "+ temp);
+                            lineList.add("pop r0");
+                            lineList.add("move r0 "+node.result);
                             regCount++;
                         }
                         break;
@@ -124,27 +144,29 @@ public class NodeConverter {
                         val1 = "";
                         if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
                             if(node.operand1.startsWith("$L")) {
-                                lineList.add("move $-" + node.operand1.substring(2) + " " + temp);
+                                lineList.add("move $-" + node.operand1.substring(2) + " r3");
                             } else {
-                                lineList.add("move " + node.operand1 + " " + temp);
+                                lineList.add("move " + node.operand1 + " r3");
                             }
                             val1 = temp;
                             regCount++;
                         } else if (!node.operand1.startsWith("$T")) {
                             if(node.operand1.startsWith("$L")) {
-                                lineList.add("move $-" + node.operand1.substring(2) + " " + temp);
+                                lineList.add("move $-" + node.operand1.substring(2) + " r3");
                             } else {
-                                lineList.add("move " + node.operand1 + " " + temp);
+                                lineList.add("move " + node.operand1 + " r3");
                             }
                             val1 = temp;
                             regCount++;
                             tempMap.put(target, temp);
                         } else if (node.operand1.startsWith("$T")) {
-                            val1 = tempMap.get(node.operand1);
+                            lineList.add("move " + node.operand1 + " r3");
+                            val1 = node.operand1;
                         }
                         if(target != null && target.equals("$R")){
                             target = "$"+(5+global.getPCount(currentFunction));
                         }
+                        val1 = "r3";
                         lineList.add("move " + val1 + " " + target);
                         break;
                     case "WRITEI":
@@ -176,50 +198,53 @@ public class NodeConverter {
                         if (node.operand1 != null) {
                             if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
 
                             } else if (!node.operand1.startsWith("$T")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
                             } else if (node.operand1.startsWith("$T")) {
-                                val1 = tempMap.get(node.operand1);
+                                lineList.add("move " + node.operand1 + " r1");
+                                val1 = "r1";// tempMap.get(node.operand1);
                             }
                         }
                         if (node.operand2 != null) {
                             if (checkType(node.operand2).equals("INT") || checkType(node.operand2).equals("FLOAT")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (!node.operand2.startsWith("$T")) {
-                                if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                if(node.operand2.startsWith("$P")) {
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (node.operand2.startsWith("$T")) {
-                                val2 = tempMap.get(node.operand2);
+                                lineList.add("move " + node.operand2 + " r2");
+                                val2 = "r2";// tempMap.get(node.operand2);
                             }
                         }
-                        tempMap.put(target, val2);
+                        //"POOP" REMEMBER TO CHANGE TEMP MAP AND TARGET
                         lineList.add("mulr " + val1 + " " + val2);
+                        lineList.add("move " + val2 + " " + target);
                         break;
                     case "F/": //lineList.add("divr "+val1+" "+val2);
                         val1 = "";
@@ -229,43 +254,54 @@ public class NodeConverter {
                         if (node.operand1 != null) {
                             if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
 
                             } else if (!node.operand1.startsWith("$T")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
                             } else if (node.operand1.startsWith("$T")) {
-                                val1 = tempMap.get(node.operand1);
+                                lineList.add("move " + node.operand1 + " r1");
+                                val1 = "r1";
+                                //val1 = tempMap.get(node.operand1);
                             }
                         }
                         if (node.operand2 != null) {
                             if (checkType(node.operand2).equals("INT") || checkType(node.operand2).equals("FLOAT")) {
-                                lineList.add("move " + node.operand2 + " " + temp);
-                                val2 = temp;
+                                if(node.operand2.startsWith("$P")) {
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
+                                } else {
+                                    lineList.add("move " + node.operand2 + " r2");
+                                }
+                                val2 = "r2";
                                 regCount++;
-
                             } else if (!node.operand2.startsWith("$T")) {
-                                lineList.add("move " + node.operand2 + " " + temp);
-                                val2 = temp;
+                                if(node.operand2.startsWith("$P")) {
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
+                                } else {
+                                    lineList.add("move " + node.operand2 + " r2");
+                                }
+                                val2 = "r2";
                                 regCount++;
                             } else if (node.operand2.startsWith("$T")) {
-                                val2 = tempMap.get(node.operand2);
+                                lineList.add("move " + node.operand2 + " r2");
+                                val2 = "r2";
                             }
                         }
                         tempMap.put(target, val1);
                         lineList.add("divr " + val2 + " " + val1);
+                        lineList.add("move " + val1 + " " + target);
                         break;
                     case "F+": //lineList.add("addr "+val1+" "+val2);
                         val1 = "";
@@ -275,50 +311,52 @@ public class NodeConverter {
                         if (node.operand1 != null) {
                             if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
 
                             } else if (!node.operand1.startsWith("$T")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
                             } else if (node.operand1.startsWith("$T")) {
-                                val1 = tempMap.get(node.operand1);
+                                lineList.add("move " + node.operand1 + " r1");
+                                val1 = "r1";// tempMap.get(node.operand1);
                             }
                         }
                         if (node.operand2 != null) {
                             if (checkType(node.operand2).equals("INT") || checkType(node.operand2).equals("FLOAT")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (!node.operand2.startsWith("$T")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (node.operand2.startsWith("$T")) {
-                                val2 = tempMap.get(node.operand2);
+                                lineList.add("move " + node.operand2 + " r2");
+                                val2 = "r2";// tempMap.get(node.operand2);
                             }
                         }
-                        tempMap.put(target, val2);
                         lineList.add("addr " + val1 + " " + val2);
+                        lineList.add("move " + val2 + " " + target);
                         break;
                     case "F-": //lineList.add("subr "+val1+" "+val2);
                         val1 = "";
@@ -327,35 +365,54 @@ public class NodeConverter {
                         temp = "r" + regCount;
                         if (node.operand1 != null) {
                             if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
-                                lineList.add("move " + node.operand1 + " " + temp);
-                                val1 = temp;
+                                if(node.operand1.startsWith("$P")) {
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
+                                } else {
+                                    lineList.add("move " + node.operand1 + " r1");
+                                }
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
 
                             } else if (!node.operand1.startsWith("$T")) {
-                                lineList.add("move " + node.operand1 + " " + temp);
-                                val1 = temp;
+                                if(node.operand1.startsWith("$P")) {
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
+                                } else {
+                                    lineList.add("move " + node.operand1 + " r1");
+                                }
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
                             } else if (node.operand1.startsWith("$T")) {
-                                val1 = tempMap.get(node.operand1);
+                                lineList.add("move " + node.operand1 + " r1");
+                                val1 = "r1";
+                                //val1 = tempMap.get(node.operand1);
                             }
                         }
                         if (node.operand2 != null) {
                             if (checkType(node.operand2).equals("INT") || checkType(node.operand2).equals("FLOAT")) {
-                                lineList.add("move " + node.operand2 + " " + temp);
-                                val2 = temp;
+                                if(node.operand2.startsWith("$P")) {
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
+                                } else {
+                                    lineList.add("move " + node.operand2 + " r2");
+                                }
+                                val2 = "r2";
                                 regCount++;
                             } else if (!node.operand2.startsWith("$T")) {
-                                lineList.add("move " + node.operand2 + " " + temp);
-                                val2 = temp;
+                                if(node.operand2.startsWith("$P")) {
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
+                                } else {
+                                    lineList.add("move " + node.operand2 + " r2");
+                                }
+                                val2 = "r2";
                                 regCount++;
                             } else if (node.operand2.startsWith("$T")) {
-                                val2 = tempMap.get(node.operand2);
+                                lineList.add("move " + node.operand2 + " r2");
+                                val2 = "r2";
                             }
                         }
-                        tempMap.put(target, val1);
                         lineList.add("subr " + val2 + " " + val1);
+                        lineList.add("move " + val1 + " " + target);
                         break;
                     case "I*":
                         val1 = "";
@@ -365,50 +422,52 @@ public class NodeConverter {
                         if (node.operand1 != null) {
                             if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
 
                             } else if (!node.operand1.startsWith("$T")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
                             } else if (node.operand1.startsWith("$T")) {
-                                val1 = tempMap.get(node.operand1);
+                                lineList.add("move " + node.operand1 + " r1");
+                                val1 = "r1";// tempMap.get(node.operand1);
                             }
                         }
                         if (node.operand2 != null) {
                             if (checkType(node.operand2).equals("INT") || checkType(node.operand2).equals("FLOAT")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (!node.operand2.startsWith("$T")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (node.operand2.startsWith("$T")) {
-                                val2 = tempMap.get(node.operand2);
+                                lineList.add("move " + node.operand2 + " r2");
+                                val2 = "r2";// tempMap.get(node.operand2);
                             }
                         }
-                        tempMap.put(target, val2);
                         lineList.add("muli " + val1 + " " + val2);
+                        lineList.add("move " + val2 + " " + target);
                         break;
                     case "I/":
                         val1 = "";
@@ -418,50 +477,53 @@ public class NodeConverter {
                         if (node.operand1 != null) {
                             if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
 
                             } else if (!node.operand1.startsWith("$T")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
                             } else if (node.operand1.startsWith("$T")) {
-                                val1 = tempMap.get(node.operand1);
+                                lineList.add("move " + node.operand1 + " r1");
+                                val1 = "r1";
                             }
                         }
                         if (node.operand2 != null) {
                             if (checkType(node.operand2).equals("INT") || checkType(node.operand2).equals("FLOAT")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (!node.operand2.startsWith("$T")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (node.operand2.startsWith("$T")) {
-                                val2 = tempMap.get(node.operand2);
+                                lineList.add("move " + node.operand2 + " r2");
+                                val2 = "r2";
                             }
                         }
                         tempMap.put(target, val1);
                         lineList.add("divi " + val2 + " " + val1);
+                        lineList.add("move " + val1 + " " + target);
                         break;
                     case "I+":
                         val1 = "";
@@ -471,50 +533,53 @@ public class NodeConverter {
                         if (node.operand1 != null) {
                             if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
 
                             } else if (!node.operand1.startsWith("$T")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
                             } else if (node.operand1.startsWith("$T")) {
-                                val1 = tempMap.get(node.operand1);
+                                lineList.add("move " + node.operand1 + " r1");
+                                val1 = "r1";// tempMap.get(node.operand1);
                             }
                         }
                         if (node.operand2 != null) {
                             if (checkType(node.operand2).equals("INT") || checkType(node.operand2).equals("FLOAT")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (!node.operand2.startsWith("$T")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (node.operand2.startsWith("$T")) {
-                                val2 = tempMap.get(node.operand2);
+                                lineList.add("move " + node.operand2 + " r2");
+                                val2 = "r2";// tempMap.get(node.operand2);
                             }
                         }
-                        tempMap.put(target, val2);
+                        //tempMap.put(target, val2);
                         lineList.add("addi " + val1 + " " + val2);
+                        lineList.add("move " + val2 + " " + target);
                         break;
                     case "I-":
                         val1 = "";
@@ -524,50 +589,54 @@ public class NodeConverter {
                         if (node.operand1 != null) {
                             if (checkType(node.operand1).equals("INT") || checkType(node.operand1).equals("FLOAT")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
 
                             } else if (!node.operand1.startsWith("$T")) {
                                 if(node.operand1.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand1.substring(2))) + " r1");
                                 } else {
-                                    lineList.add("move " + node.operand1 + " " + temp);
+                                    lineList.add("move " + node.operand1 + " r1");
                                 }
-                                val1 = temp;
+                                val1 = "r1";
                                 regCount++;
                                 temp = "r" + regCount;
                             } else if (node.operand1.startsWith("$T")) {
-                                val1 = tempMap.get(node.operand1);
+                                lineList.add("move " + node.operand1 + " r1");
+                                val1 = "r1";
+                                //val1 = tempMap.get(node.operand1);
                             }
                         }
                         if (node.operand2 != null) {
                             if (checkType(node.operand2).equals("INT") || checkType(node.operand2).equals("FLOAT")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (!node.operand2.startsWith("$T")) {
                                 if(node.operand2.startsWith("$P")) {
-                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " " + temp);
+                                    lineList.add("move $" + (5+Integer.parseInt(node.operand2.substring(2))) + " r2");
                                 } else {
-                                    lineList.add("move " + node.operand2 + " " + temp);
+                                    lineList.add("move " + node.operand2 + " r2");
                                 }
-                                val2 = temp;
+                                val2 = "r2";
                                 regCount++;
                             } else if (node.operand2.startsWith("$T")) {
-                                val2 = tempMap.get(node.operand2);
+                                lineList.add("move " + node.operand2 + " r2");
+                                val2 = "r2";
                             }
                         }
-                        tempMap.put(target, val1);
+                        //tempMap.put(target, val1);
                         lineList.add("subi " + val2 + " " + val1);
+                        lineList.add("move " + val1 + " " + target);
                         break;
                     case "JUMP":
                         lineList.add("jmp " + node.result);
@@ -587,14 +656,40 @@ public class NodeConverter {
                         if(node.operand2.startsWith("$P")) {
                             node.operand2 = "$" + (5 + Integer.parseInt(node.operand2.substring(2))) + "";
                         }
-                        lineList.add("move " + node.operand1 + " " + temp);
+                        lineList.add("move " + node.operand1 + " r1");
                         regCount++;
 
                         temp2 = "r" + regCount;
                         regCount++;
-                        lineList.add("move " + node.operand2 + " " + temp2);
-
-                        lineList.add("cmpi " + temp + " " + temp2);
+                        lineList.add("move " + node.operand2 + " r2");
+                        isInt = true;
+                        if(checkType(node.operand1).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand1).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand1, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand1, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand1, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(checkType(node.operand2).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand2).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand2, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand2, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand2, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(isInt){
+                            lineList.add("cmpi r1 r2");
+                        } else {
+                            lineList.add("cmpr r1 r2");
+                        }
                         lineList.add("jgt " + node.result);
                         break;
                     case "GE":
@@ -604,14 +699,40 @@ public class NodeConverter {
                         if(node.operand2.startsWith("$P")) {
                             node.operand2 = "$" + (5 + Integer.parseInt(node.operand2.substring(2)));
                         }
-                        lineList.add("move " + node.operand1 + " " + temp);
+                        lineList.add("move " + node.operand1 + " r1");
                         regCount++;
 
                         temp2 = "r" + regCount;
                         regCount++;
-                        lineList.add("move " + node.operand2 + " " + temp2);
-
-                        lineList.add("cmpi " + temp + " " + temp2);
+                        lineList.add("move " + node.operand2 + " r2");
+                        isInt = true;
+                        if(checkType(node.operand1).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand1).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand1, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand1, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand1, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(checkType(node.operand2).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand2).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand2, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand2, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand2, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(isInt){
+                            lineList.add("cmpi r1 r2");
+                        } else {
+                            lineList.add("cmpr r1 r2");
+                        }
                         lineList.add("jge " + node.result);
                         break;
                     case "LT":
@@ -621,14 +742,41 @@ public class NodeConverter {
                         if(node.operand2.startsWith("$P")) {
                             node.operand2 = "$" + (5 + Integer.parseInt(node.operand2.substring(2)));
                         }
-                        lineList.add("move " + node.operand1 + " " + temp);
+                        lineList.add("move " + node.operand1 + " r1");
                         regCount++;
 
                         temp2 = "r" + regCount;
                         regCount++;
-                        lineList.add("move " + node.operand2 + " " + temp2);
+                        lineList.add("move " + node.operand2 + " r2");
 
-                        lineList.add("cmpi " + temp + " " + temp2);
+                        isInt = true;
+                        if(checkType(node.operand1).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand1).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand1, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand1, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand1, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(checkType(node.operand2).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand2).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand2, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand2, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand2, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(isInt){
+                            lineList.add("cmpi r1 r2");
+                        } else {
+                            lineList.add("cmpr r1 r2");
+                        }
                         lineList.add("jlt " + node.result);
                         break;
                     case "LE":
@@ -638,13 +786,40 @@ public class NodeConverter {
                         if(node.operand2.startsWith("$P")) {
                             node.operand2 = "$" + (5 + Integer.parseInt(node.operand2.substring(2)));
                         }
-                        lineList.add("move " + node.operand1 + " " + temp);
+                        lineList.add("move " + node.operand1 + " r1");
                         regCount++;
                         temp2 = "r" + regCount;
                         regCount++;
-                        lineList.add("move " + node.operand2 + " " + temp2);
+                        lineList.add("move " + node.operand2 + " r2");
 
-                        lineList.add("cmpi " + temp + " " + temp2);
+                        isInt = true;
+                        if(checkType(node.operand1).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand1).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand1, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand1, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand1, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(checkType(node.operand2).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand2).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand2, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand2, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand2, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(isInt){
+                            lineList.add("cmpi r1 r2");
+                        } else {
+                            lineList.add("cmpr r1 r2");
+                        }
                         lineList.add("jle " + node.result);
                         break;
                     case "NE":
@@ -654,13 +829,40 @@ public class NodeConverter {
                         if(node.operand2.startsWith("$P")) {
                             node.operand2 = "$" + (5 + Integer.parseInt(node.operand2.substring(2)));
                         }
-                        lineList.add("move " + node.operand1 + " " + temp);
+                        lineList.add("move " + node.operand1 + " r1");
                         regCount++;
 
                         temp2 = "r" + regCount;
                         regCount++;
-                        lineList.add("move " + node.operand2 + " " + temp2);
-                        lineList.add("cmpi " + temp + " " + temp2);
+                        lineList.add("move " + node.operand2 + " r2");
+                        isInt = true;
+                        if(checkType(node.operand1).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand1).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand1, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand1, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand1, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(checkType(node.operand2).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand2).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand2, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand2, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand2, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(isInt){
+                            lineList.add("cmpi r1 r2");
+                        } else {
+                            lineList.add("cmpr r1 r2");
+                        }
                         lineList.add("jne " + node.result);
                         break;
                     case "EQ":
@@ -670,13 +872,40 @@ public class NodeConverter {
                         if(node.operand2.startsWith("$P")) {
                             node.operand2 = "$" + (5 + Integer.parseInt(node.operand2.substring(2)));
                         }
-                        lineList.add("move " + node.operand1 + " " + temp);
+                        lineList.add("move " + node.operand1 + " r1");
                         regCount++;
 
                         temp2 = "r" + regCount;
                         regCount++;
-                        lineList.add("move " + node.operand2 + " " + temp2);
-                        lineList.add("cmpi " + temp + " " + temp2);
+                        lineList.add("move " + node.operand2 + " r2");
+                        isInt = true;
+                        if(checkType(node.operand1).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand1).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand1, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand1, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand1, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(checkType(node.operand2).equals("INT")){
+                            isInt = true;
+                        } else if (checkType(node.operand2).equals("FLOAT")){
+                            isInt = false;
+                        } else if (global.checkTypeWScope(node.operand2, currentFunction) != null){
+                            if (global.checkTypeWScope(node.operand2, currentFunction) .equals("INT")){
+                                isInt = true;
+                            } else if (global.checkTypeWScope(node.operand2, currentFunction).equals("FLOAT")){
+                                isInt = false;
+                            }
+                        }
+                        if(isInt){
+                            lineList.add("cmpi r1 r2");
+                        } else {
+                            lineList.add("cmpr r1 r2");
+                        }
                         lineList.add("jeq " + node.result);
                         break;
 

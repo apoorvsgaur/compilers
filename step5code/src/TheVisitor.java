@@ -35,6 +35,7 @@ public class TheVisitor extends MicroBaseVisitor {
 
         //global.print();
         //watcher.print();
+        nodeConverter.addVarNum(tempCount);
         nodeConverter.print();
         return null;
     }
@@ -43,7 +44,7 @@ public class TheVisitor extends MicroBaseVisitor {
     public Object visitFunc_decl(MicroParser.Func_declContext ctx) {
         functionType = ctx.any_type().getText();
         watcher.addScope(ctx.id().getText());
-        tempCount = 1;
+        //tempCount = 1;
 
         nodeConverter.addNode(new Node("LABEL", null, null, ctx.id().getText()));
         watcher.functionList.add(ctx.id().getText());
@@ -143,6 +144,7 @@ public class TheVisitor extends MicroBaseVisitor {
     @Override
     public ConditionalPackage visitCond(MicroParser.CondContext ctx) {
         blockCount++;
+        //currentType = "FLOAT";
         watcher.addScope("BLOCK " + blockCount);
         if ( ctx.getText().equals("TRUE")){
             watcher.popScope();
@@ -212,6 +214,7 @@ public class TheVisitor extends MicroBaseVisitor {
 
     @Override
     public ConditionalPackage visitDo_cond(MicroParser.Do_condContext ctx) {
+        //currentType = "FLOAT";
         if ( ctx.getText().equals("TRUE")){
             return new ConditionalPackage("EQ", "1", "1");
         } else if (ctx.getText().equals("FALSE")  ){

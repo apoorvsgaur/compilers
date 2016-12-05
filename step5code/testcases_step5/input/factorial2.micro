@@ -25,7 +25,7 @@ BEGIN
 
 		IF(num = 1)
 			result := 1;
-		ELSIF(num >1)
+		ELSIF(num > 1)
 			  result := factorial(num);
 	    ELSIF(TRUE)
 			  result := 0;
