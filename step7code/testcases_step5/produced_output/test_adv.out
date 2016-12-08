@@ -1,0 +1,209 @@
+;IR code
+;LABEL main
+;LINK
+;STOREF 0.0001 tolerance
+;STOREF 7.0 num
+;STOREF num approx
+;STOREI 0 count
+;STOREF 0.0 diff
+;STOREI 0 enough
+;LABEL t_do_while0
+;I+ count 1 $T1
+;STOREI $T1 count
+;F/ num approx $T2
+;F+ approx $T2 $T3
+;F* 0.5 $T3 $T4
+;STOREF $T4 newapprox
+;F- approx newapprox $T5
+;STOREF $T5 diff
+;GT diff 0.0 t_if0
+;JUMP t_else0
+;LABEL t_if0
+;LT diff tolerance t_if1
+;JUMP END1
+;LABEL t_if1
+;STOREI 1 enough
+;JUMP END1
+;LABEL END1
+;JUMP END0
+;LABEL t_else0
+;EQ 1 1 t_if2
+;JUMP END2
+;LABEL t_if2
+;I- 0.0 tolerance $T6
+;GT diff $T6 t_if3
+;JUMP END3
+;LABEL t_if3
+;STOREI 1 enough
+;JUMP END3
+;LABEL END3
+;JUMP END2
+;LABEL END2
+;LABEL END0
+;STOREF newapprox approx
+;NE enough 1 t_do_while0
+;WRITEF approx
+;WRITEI count
+;RET
+
+;LABEL main
+;LINK
+;STOREF 0.0001 tolerance
+;STOREF 7.0 num
+;STOREF num approx
+;STOREI 0 count
+;STOREF 0.0 diff
+;STOREI 0 enough
+;LABEL t_do_while0
+;I+ count 1 $T1
+;STOREI $T1 count
+;F/ num approx $T2
+;F+ approx $T2 $T3
+;F* 0.5 $T3 $T4
+;STOREF $T4 newapprox
+;F- approx newapprox $T5
+;STOREF $T5 diff
+;GT diff 0.0 t_if0
+;JUMP t_else0
+;LABEL t_if0
+;LT diff tolerance t_if1
+;JUMP END1
+;LABEL t_if1
+;STOREI 1 enough
+;JUMP END1
+;LABEL END1
+;JUMP END0
+;LABEL t_else0
+;EQ 1 1 t_if2
+;JUMP END2
+;LABEL t_if2
+;I- 0.0 tolerance $T6
+;GT diff $T6 t_if3
+;JUMP END3
+;LABEL t_if3
+;STOREI 1 enough
+;JUMP END3
+;LABEL END3
+;JUMP END2
+;LABEL END2
+;LABEL END0
+;STOREF newapprox approx
+;NE enough 1 t_do_while0
+;WRITEF approx
+;WRITEI count
+;RET
+
+;tiny code
+var TempVar6
+var TempVar5
+var TempVar4
+var TempVar3
+var TempVar2
+var TempVar1
+var newapprox
+var num
+var count
+var diff
+var enough
+var tolerance
+var approx
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+label main
+link 0
+move 0.0001 r3
+move r3 tolerance
+move 7.0 r3
+move r3 num
+move num r3
+move r3 approx
+move 0 r3
+move r3 count
+move 0.0 r3
+move r3 diff
+move 0 r3
+move r3 enough
+label t_do_while0
+move count r1
+move 1 r2
+addi r1 r2
+move r2 TempVar1
+move TempVar1 r3
+move r3 count
+move num r1
+move approx r2
+divr r2 r1
+move r1 TempVar2
+move approx r1
+move TempVar2 r2
+addr r1 r2
+move r2 TempVar3
+move 0.5 r1
+move TempVar3 r2
+mulr r1 r2
+move r2 TempVar4
+move TempVar4 r3
+move r3 newapprox
+move approx r1
+move newapprox r2
+subr r2 r1
+move r1 TempVar5
+move TempVar5 r3
+move r3 diff
+move diff r1
+move 0.0 r2
+cmpr r1 r2
+jgt t_if0
+jmp t_else0
+label t_if0
+move diff r1
+move tolerance r2
+cmpr r1 r2
+jlt t_if1
+jmp END1
+label t_if1
+move 1 r3
+move r3 enough
+jmp END1
+label END1
+jmp END0
+label t_else0
+move 1 r1
+move 1 r2
+cmpi r1 r2
+jeq t_if2
+jmp END2
+label t_if2
+move 0.0 r1
+move tolerance r2
+subi r2 r1
+move r1 TempVar6
+move diff r1
+move TempVar6 r2
+cmpr r1 r2
+jgt t_if3
+jmp END3
+label t_if3
+move 1 r3
+move r3 enough
+jmp END3
+label END3
+jmp END2
+label END2
+label END0
+move newapprox r3
+move r3 approx
+move enough r1
+move 1 r2
+cmpi r1 r2
+jne t_do_while0
+sys writer approx
+sys writei count
+unlnk
+ret
+end

@@ -1,0 +1,135 @@
+;IR code
+;LABEL main
+;LINK
+;STOREI 20 a
+;STOREI 30 b
+;STOREI 40 c
+;I* a b $T1
+;I+ c $T1 $T2
+;I* a b $T3
+;I+ $T3 c $T4
+;I/ $T4 a $T5
+;I+ $T2 $T5 $T6
+;I+ $T6 20 $T7
+;STOREI $T7 c
+;I* b b $T8
+;I+ $T8 a $T9
+;STOREI $T9 b
+;I* b a $T10
+;I/ $T10 a $T11
+;STOREI $T11 a
+;WRITEI c
+;WRITEI b
+;WRITEI a
+;RET
+
+;LABEL main
+;LINK
+;STOREI 20 a
+;STOREI 30 b
+;STOREI 40 c
+;I* a b $T1
+;I+ c $T1 $T2
+;I* a b $T3
+;I+ $T3 c $T4
+;I/ $T4 a $T5
+;I+ $T2 $T5 $T6
+;I+ $T6 20 $T7
+;STOREI $T7 c
+;I* b b $T8
+;I+ $T8 a $T9
+;STOREI $T9 b
+;I* b a $T10
+;I/ $T10 a $T11
+;STOREI $T11 a
+;WRITEI c
+;WRITEI b
+;WRITEI a
+;RET
+
+;tiny code
+var TempVar11
+var TempVar10
+var TempVar9
+var TempVar8
+var TempVar7
+var TempVar6
+var TempVar5
+var TempVar4
+var TempVar3
+var TempVar2
+var TempVar1
+var a
+var b
+var c
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+label main
+link 0
+move 20 r3
+move r3 a
+move 30 r3
+move r3 b
+move 40 r3
+move r3 c
+move a r1
+move b r2
+muli r1 r2
+move r2 TempVar1
+move c r1
+move TempVar1 r2
+addi r1 r2
+move r2 TempVar2
+move a r1
+move b r2
+muli r1 r2
+move r2 TempVar3
+move TempVar3 r1
+move c r2
+addi r1 r2
+move r2 TempVar4
+move TempVar4 r1
+move a r2
+divi r2 r1
+move r1 TempVar5
+move TempVar2 r1
+move TempVar5 r2
+addi r1 r2
+move r2 TempVar6
+move TempVar6 r1
+move 20 r2
+addi r1 r2
+move r2 TempVar7
+move TempVar7 r3
+move r3 c
+move b r1
+move b r2
+muli r1 r2
+move r2 TempVar8
+move TempVar8 r1
+move a r2
+addi r1 r2
+move r2 TempVar9
+move TempVar9 r3
+move r3 b
+move b r1
+move a r2
+muli r1 r2
+move r2 TempVar10
+move TempVar10 r1
+move a r2
+divi r2 r1
+move r1 TempVar11
+move TempVar11 r3
+move r3 a
+sys writei c
+sys writei b
+sys writei a
+unlnk
+ret
+end

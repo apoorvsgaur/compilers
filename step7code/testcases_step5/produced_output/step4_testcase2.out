@@ -1,0 +1,204 @@
+;IR code
+;LABEL main
+;LINK
+;STOREI 1 a
+;STOREI 1 b
+;LABEL t_do_while0
+;EQ b 1 t_if0
+;JUMP t_else0
+;LABEL t_if0
+;I* 1 a $T1
+;STOREI $T1 g
+;WRITEI g
+;JUMP END0
+;LABEL t_else0
+;EQ b 2 t_if1
+;JUMP t_else1
+;LABEL t_if1
+;I* 2 a $T2
+;STOREI $T2 p
+;WRITEI p
+;JUMP END1
+;LABEL t_else1
+;EQ b 3 t_if2
+;JUMP t_else2
+;LABEL t_if2
+;I* 3 a $T3
+;STOREI $T3 k
+;WRITEI k
+;JUMP END2
+;LABEL t_else2
+;EQ b 4 t_if3
+;JUMP END3
+;LABEL t_if3
+;I* 4 a $T4
+;STOREI $T4 u
+;WRITEI u
+;JUMP END3
+;LABEL END3
+;LABEL END2
+;LABEL END1
+;LABEL END0
+;I+ b 1 $T5
+;STOREI $T5 b
+;I+ a 20 $T6
+;STOREI $T6 a
+;LE a 120 t_do_while0
+;RET
+
+;LABEL main
+;LINK
+;STOREI 1 a
+;STOREI 1 b
+;LABEL t_do_while0
+;EQ b 1 t_if0
+;JUMP t_else0
+;LABEL t_if0
+;I* 1 a $T1
+;STOREI $T1 g
+;WRITEI g
+;JUMP END0
+;LABEL t_else0
+;EQ b 2 t_if1
+;JUMP t_else1
+;LABEL t_if1
+;I* 2 a $T2
+;STOREI $T2 p
+;WRITEI p
+;JUMP END1
+;LABEL t_else1
+;EQ b 3 t_if2
+;JUMP t_else2
+;LABEL t_if2
+;I* 3 a $T3
+;STOREI $T3 k
+;WRITEI k
+;JUMP END2
+;LABEL t_else2
+;EQ b 4 t_if3
+;JUMP END3
+;LABEL t_if3
+;I* 4 a $T4
+;STOREI $T4 u
+;WRITEI u
+;JUMP END3
+;LABEL END3
+;LABEL END2
+;LABEL END1
+;LABEL END0
+;I+ b 1 $T5
+;STOREI $T5 b
+;I+ a 20 $T6
+;STOREI $T6 a
+;LE a 120 t_do_while0
+;RET
+
+;tiny code
+var TempVar6
+var TempVar5
+var TempVar4
+var TempVar3
+var TempVar2
+var TempVar1
+var p
+var a
+var b
+var u
+var g
+var k
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+label main
+link 0
+move 1 r3
+move r3 a
+move 1 r3
+move r3 b
+label t_do_while0
+move b r1
+move 1 r2
+cmpi r1 r2
+jeq t_if0
+jmp t_else0
+label t_if0
+move 1 r1
+move a r2
+muli r1 r2
+move r2 TempVar1
+move TempVar1 r3
+move r3 g
+sys writei g
+jmp END0
+label t_else0
+move b r1
+move 2 r2
+cmpi r1 r2
+jeq t_if1
+jmp t_else1
+label t_if1
+move 2 r1
+move a r2
+muli r1 r2
+move r2 TempVar2
+move TempVar2 r3
+move r3 p
+sys writei p
+jmp END1
+label t_else1
+move b r1
+move 3 r2
+cmpi r1 r2
+jeq t_if2
+jmp t_else2
+label t_if2
+move 3 r1
+move a r2
+muli r1 r2
+move r2 TempVar3
+move TempVar3 r3
+move r3 k
+sys writei k
+jmp END2
+label t_else2
+move b r1
+move 4 r2
+cmpi r1 r2
+jeq t_if3
+jmp END3
+label t_if3
+move 4 r1
+move a r2
+muli r1 r2
+move r2 TempVar4
+move TempVar4 r3
+move r3 u
+sys writei u
+jmp END3
+label END3
+label END2
+label END1
+label END0
+move b r1
+move 1 r2
+addi r1 r2
+move r2 TempVar5
+move TempVar5 r3
+move r3 b
+move a r1
+move 20 r2
+addi r1 r2
+move r2 TempVar6
+move TempVar6 r3
+move r3 a
+move a r1
+move 120 r2
+cmpi r1 r2
+jle t_do_while0
+unlnk
+ret
+end

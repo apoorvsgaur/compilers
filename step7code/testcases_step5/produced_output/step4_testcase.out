@@ -1,0 +1,128 @@
+;IR code
+;LABEL main
+;LINK
+;STOREI 0 i
+;STOREI 0 a
+;STOREI 0 b
+;LABEL t_do_while0
+;READI p
+;GT p 10 t_if0
+;JUMP t_else0
+;LABEL t_if0
+;I+ a 1 $T1
+;STOREI $T1 a
+;JUMP END0
+;LABEL t_else0
+;EQ 1 1 t_if1
+;JUMP END1
+;LABEL t_if1
+;I+ b 1 $T2
+;STOREI $T2 b
+;JUMP END1
+;LABEL END1
+;LABEL END0
+;I+ i 1 $T3
+;STOREI $T3 i
+;NE i 10 t_do_while0
+;WRITEI a
+;WRITEI b
+;RET
+
+;LABEL main
+;LINK
+;STOREI 0 i
+;STOREI 0 a
+;STOREI 0 b
+;LABEL t_do_while0
+;READI p
+;GT p 10 t_if0
+;JUMP t_else0
+;LABEL t_if0
+;I+ a 1 $T1
+;STOREI $T1 a
+;JUMP END0
+;LABEL t_else0
+;EQ 1 1 t_if1
+;JUMP END1
+;LABEL t_if1
+;I+ b 1 $T2
+;STOREI $T2 b
+;JUMP END1
+;LABEL END1
+;LABEL END0
+;I+ i 1 $T3
+;STOREI $T3 i
+;NE i 10 t_do_while0
+;WRITEI a
+;WRITEI b
+;RET
+
+;tiny code
+var TempVar3
+var TempVar2
+var TempVar1
+var p
+var a
+var b
+var i
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+label main
+link 0
+move 0 r3
+move r3 i
+move 0 r3
+move r3 a
+move 0 r3
+move r3 b
+label t_do_while0
+sys readi p
+move p r1
+move 10 r2
+cmpi r1 r2
+jgt t_if0
+jmp t_else0
+label t_if0
+move a r1
+move 1 r2
+addi r1 r2
+move r2 TempVar1
+move TempVar1 r3
+move r3 a
+jmp END0
+label t_else0
+move 1 r1
+move 1 r2
+cmpi r1 r2
+jeq t_if1
+jmp END1
+label t_if1
+move b r1
+move 1 r2
+addi r1 r2
+move r2 TempVar2
+move TempVar2 r3
+move r3 b
+jmp END1
+label END1
+label END0
+move i r1
+move 1 r2
+addi r1 r2
+move r2 TempVar3
+move TempVar3 r3
+move r3 i
+move i r1
+move 10 r2
+cmpi r1 r2
+jne t_do_while0
+sys writei a
+sys writei b
+unlnk
+ret
+end
